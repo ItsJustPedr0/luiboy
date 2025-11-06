@@ -13,10 +13,10 @@ int main()
   cout << "=========================" << endl; 
   
   string fileName;
-  char continueChar;
+  string continueString;
   vector<vector<double>> gaussMatrix;
   
-  while(!(continueChar == 'n'))
+  while(true)
   {
     cout << "\nPlease input the name of your matrix file (defaults to 'matrix'): ";
     gaussMatrix = readMatrixFile(readUserInput());
@@ -27,7 +27,8 @@ int main()
     }
     
     cout << "\nWould you like to choose another file?" << endl
-        << "Enter any character to continue or enter 'n' to exit: ";
-    cin.get(continueChar);
+        << "Enter any character to continue or enter 'N' to exit: ";
+    getline(cin, continueString);
+    if(continueString == "N") return 0;
   }
 }
