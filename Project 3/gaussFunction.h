@@ -21,7 +21,7 @@ fstream readUserInput()
     matrixFile.open(fileName);
     if(!matrixFile.is_open() && !fileName.empty())
     {
-      cout << "Error opening " << fileName << ". Please try again: ";
+      cout << "Error opening " << fileName << ". Please try again (defaults to 'matrix'): ";
     }
     else
     {
@@ -62,22 +62,36 @@ vector<vector<double>> readMatrixFile(fstream matrixFile)
     else 
     {
       vector<double> currentRow;
-      for(int i = 0; i < colNumber; i++)
+      int i = 0;
+      for(i; i < colNumber; i++)
       {
-        matrixRowStream >> matrixElement;
+        if(!(matrixRowStream >> matrixElement)) break;
         currentRow.push_back(matrixElement);
         cout << matrixElement << " | ";
+      }
+      if (i < colNumber && i != colNumber - 1) 
+      {
+        cout << "\nInvalid matrix: lacking coefficients." << endl;
+        gaussMatrix.clear();
+        return gaussMatrix;
       }
       gaussMatrix.push_back(currentRow);
       cout << endl;
     }
     rowNumber++;
   }
+  if (rowNumber < colNumber - 1)
+  {
+    cout << "Invalid matrix: lacking equations for no. of unknowns." << endl;
+    gaussMatrix.clear();
+  }
   return gaussMatrix;
 }
 
 void gaussElimination(vector<vector<double>> A)
 {
+
+
   int n = A.capacity() - 1;
   vector<double> x(A.capacity()); 
 
@@ -91,7 +105,7 @@ void gaussElimination(vector<vector<double>> A)
     if (A[m][k] == 0)
     {
       cout << "No unique solution exists." << endl;
-      break;
+      return;
     }
     else //exchange row k and m 
     {
@@ -102,7 +116,7 @@ void gaussElimination(vector<vector<double>> A)
     if (A[n][n] == 0)
     {
       cout << "No unique solution exists." << endl;
-      break;
+      return;
     }
     else
     {

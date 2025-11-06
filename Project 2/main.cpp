@@ -5,7 +5,7 @@
 // Section: ENGG 27.01 - M
 // Description: Main program file for testing the Hybrid Root-Finding Approach
 
-#include "brent_root.h"
+#include "brent_root.cpp"
 #include <vector>
 #include <limits>
 

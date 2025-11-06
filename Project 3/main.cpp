@@ -11,13 +11,23 @@ int main()
   cout << "=========================" << endl;
   cout << "Gauss Elimination Program" << endl;
   cout << "=========================" << endl; 
-  cout << "\nPlease input the name of your matrix file (defaults to 'matrix'): ";
   
   string fileName;
+  char continueChar;
   vector<vector<double>> gaussMatrix;
-    
-  gaussMatrix = readMatrixFile(readUserInput());
   
-  cout << endl << "Solution:" << endl;
-  gaussElimination(gaussMatrix);
+  while(!(continueChar == 'n'))
+  {
+    cout << "\nPlease input the name of your matrix file (defaults to 'matrix'): ";
+    gaussMatrix = readMatrixFile(readUserInput());
+    
+    if(gaussMatrix.empty() == false){
+      cout << endl << "Solution:" << endl;
+      gaussElimination(gaussMatrix);
+    }
+    
+    cout << "\nWould you like to choose another file?" << endl
+        << "Enter any character to continue or enter 'n' to exit: ";
+    cin.get(continueChar);
+  }
 }
