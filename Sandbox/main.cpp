@@ -1,15 +1,14 @@
-#include "linkedList.hpp"
 #include <iostream>
 
 using namespace std;
 
 int main()
 {
-  
-  LinkedList int1;
-  int1.addToHead(1);
-  int1.addToTail(2);
-  int1.addToTail(3);
-  int1.addToTail(4);
-  cout << int1.displayInfo();
+  double x_n;
+  x_n = -2;
+  for (int i = 0; i < 50; i++)
+  {
+    cout << "Iteration " << i << ": " << x_n << endl;
+    x_n = (-5-(4/x_n));
+  }
 }
