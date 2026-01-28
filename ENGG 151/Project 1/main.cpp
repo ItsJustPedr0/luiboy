@@ -1,4 +1,4 @@
-// De Mesa, Nino Aloysis V.
+// De Mesa, Nino Aloysius V.
 // Estacio, Peter Julius M. 
 // Madariaga, Christian James S.
 // ENGG 151.01 - A
@@ -33,7 +33,7 @@ int main()
 
   int signalXSize = signalX.size();
   int signalYSize = signalY.size();
-  
+
   double result;
 
   for(int i = 0; (i < signalXSize || i < signalYSize); i++)
