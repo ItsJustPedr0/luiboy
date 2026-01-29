@@ -34,19 +34,22 @@ int main()
   int signalXSize = signalX.size();
   int signalYSize = signalY.size();
 
-  double result;
-
-  for(int i = 0; (i < signalXSize || i < signalYSize); i++)
+  for(int l = -signalXSize; l < signalYSize - 1; l++)
   {
-    double x_n, y_n;
+    double result = 0;
+    for(int i = 0; (i < signalXSize || i < signalYSize); i++)
+    {
+      double x_n, y_n;
+      int index = i - l; 
+      if(i >= signalXSize || i < 0) x_n = 0;
+      else x_n = signalX[i];
+      if(index >= signalYSize || index < 0) x_n = 0;
+      else y_n = signalY[index];
 
-    if(i >= signalXSize || i < 0) x_n = 0;
-    else x_n = signalX[i];
-    if(i >= signalYSize || i < 0) x_n = 0;
-    else y_n = signalY[i];
+      result += x_n * y_n;
+    }
 
-    result += x_n * y_n;
+    cout << "r_xy(" << l << ") = " << result << endl; 
   }
-
-  cout << "r_xy(0) = " << result; 
+  double p_xy = 0;
 }
