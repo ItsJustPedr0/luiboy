@@ -1,4 +1,6 @@
+// Augusto Gabbriel M. Calilung
 // Peter Julius M. Estacio
+// Rafael Luis Lambo
 // ENGG 27.01 - M
 // Project 1 - Fixed-Point Approach for Finding Roots of Polynomials
 // main.cpp
@@ -19,7 +21,7 @@ int main()
   if(!(cin >> fileName)) fileName = "test"; 
   
   fstream polynomialFile(fileName); 
-  if(!polynomialFile.is_open()) // returns error if file fails to open
+  if(!polynomialFile.is_open()) //returns error if file fails to open
   {
     cout << "No file." << endl;
     return 0;
