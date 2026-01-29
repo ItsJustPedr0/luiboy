@@ -1,6 +1,6 @@
 // Augusto Gabbriel M. Calilung
 // Peter Julius M. Estacio
-// Rafael Luis Lambo
+// Rafael Luis Mari R. Lambo
 // ENGG 27.01 - M
 // Project 1 - Fixed-Point Approach for Finding Roots of Polynomials
 // main.cpp
