@@ -5,51 +5,75 @@
 // Project 1: Normalized Crosscorrelation
 // main.cpp
 
-#include <iostream>
-#include <fstream>
-#include <vector>
-
-using namespace std;
+#include "validIntOrFloat.h"
 
 vector<double> readSignalFile(string fileName)
 {
-  fstream xDataFile(fileName);
-  vector<double> signal;
+  fstream dataFile(fileName);
+  vector<double> signalVector;
   double x_n;
-  int i = -1;
-  while (xDataFile >> x_n)
+  
+  int i = 0;
+  int startIndex = 0;
+  
+  string s1, s2;
+  getline(dataFile, s1);
+  stringstream sStream(s1);
+  sStream >> s2;
+
+  if(is_int(s2, &startIndex) && (sStream >> x_n))
   {
-    vector<double>::iterator start = signal.begin();  
-    signal.push_back(x_n);
-    i++;
+    //cout << "Index read: " << startIndex << endl;
   }
-  return signal;
+  else 
+  {
+    //cout << "Index read: 0" << endl;
+    is_floating_pt(s2, &x_n);
+  }  
+  signalVector.push_back(x_n);
+  i++;
+  
+  while (dataFile >> s2)
+  {
+    if (is_floating_pt(s2, &x_n))
+    {
+      signalVector.push_back(x_n);
+      i++;
+    }
+  }
+  return signalVector;
 }
 
 int main()
 {
-  vector<double> signalX = readSignalFile("xdata");
-  vector<double> signalY = readSignalFile("ydata");
+  vector<double> xVector = readSignalFile("xdata");
+  vector<double> yVector = readSignalFile("ydata");
 
-  int signalXSize = signalX.size();
-  int signalYSize = signalY.size();
+  int xDuration = xVector.size();
+  int yDuration = yVector.size();
 
-  for(int l = -signalXSize; l < signalYSize - 1; l++)
+  double xRawSignal[xDuration];
+  for (int i = 0; i < xDuration; i++) xRawSignal[i] = xVector[i];
+  double yRawSignal[yDuration];
+  for (int i = 0; i < yDuration; i++) yRawSignal[i] = yVector[i];
+  
+
+  for(int l = -xDuration; l < yDuration - 1; l++)
   {
     double result = 0;
-    for(int i = 0; (i < signalXSize || i < signalYSize); i++)
+    for(int i = 0; (i < xDuration || i < yDuration); i++)
     {
       double x_n, y_n;
       int index = i - l; 
-      if(i >= signalXSize || i < 0) x_n = 0;
-      else x_n = signalX[i];
-      if(index >= signalYSize || index < 0) x_n = 0;
-      else y_n = signalY[index];
+      if(i >= xDuration || i < 0) x_n = 0;
+      else x_n = xRawSignal[i];
+      if(index >= yDuration || index < 0) x_n = 0;
+      else y_n = yRawSignal[index];
 
       result += x_n * y_n;
     }
 
     cout << "r_xy(" << l << ") = " << result << endl; 
   }
-  double p_xy = 0;
+  double p_xy = 0;  
 }
