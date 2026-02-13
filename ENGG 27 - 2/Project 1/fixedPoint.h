@@ -20,8 +20,7 @@ using namespace std;
 bool is_int(string s, int* value = 0);
 bool is_floating_pt(string s, double* value = 0);
 
-fstream readPolynomialFile();
-
+void readPolynomialFile(double*& equation, int* equationIndex);
 void evaluateFixedPoint(double* equation, int equationIndex);
 
 #endif

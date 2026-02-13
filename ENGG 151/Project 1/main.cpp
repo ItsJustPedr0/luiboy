@@ -13,7 +13,7 @@ int main(int argc, char* argv[])
   {
     cout << "Invalid argument count." << endl;
     return 0;
-  }\
+  }
   int xStartIndex, yStartIndex;
   int xDuration, yDuration;
 

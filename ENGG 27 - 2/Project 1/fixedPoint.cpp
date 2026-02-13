@@ -41,7 +41,7 @@ bool is_floating_pt(string s, double* value)
   }
 }
 
-fstream readPolynomialFile()
+void readPolynomialFile(double*& equation, int *equationIndex)
 {
   // takes user input to select a polynomial file
   // if no input, defaults to 'test'
@@ -66,7 +66,31 @@ fstream readPolynomialFile()
   }
   else cout << "POLYNOMIAL file is valid." << endl;
 
-  return polynomialFile;
+  // checks for eqn index accdg to file format
+  if(!(polynomialFile >> *equationIndex))
+  {
+    cout << "Invalid file, missing polynomial index" << endl;
+  }
+  else cout << "Polynomial of index " 
+    << *equationIndex << " read."<< endl;
+
+  // initializes array of coefficients
+  equation = new double[*equationIndex+1]; 
+  double coeff;
+
+  // stores coefficients in equation array
+  for (int i = 0; i < *equationIndex + 1; i++)  
+  {
+    string s3;
+    while(polynomialFile >> s3)
+    {
+      if(is_floating_pt(s3, &coeff))
+      {
+        equation[i] = coeff;
+        break;
+      }
+    }    
+  }
 }
 
 void evaluateFixedPoint(double* equation, int equationIndex)
