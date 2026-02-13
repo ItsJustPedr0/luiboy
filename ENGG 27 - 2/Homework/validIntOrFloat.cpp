@@ -1,3 +1,8 @@
+// Estacio, Peter Julius M. 
+// ENGG 151.01 - A
+// Project 1: Normalized Crosscorrelation
+// validIntOrFloat.cpp
+
 #include "validIntOrFloat.h"
 
 bool is_int(string s, int* value)

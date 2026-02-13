@@ -1,3 +1,8 @@
+// Estacio, Peter Julius M. 
+// ENGG 151.01 - A
+// Project 1: Normalized Crosscorrelation
+// main.cpp
+
 #include "validIntOrFloat.h"
 
 int main()
