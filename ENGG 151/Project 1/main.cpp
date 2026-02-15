@@ -17,8 +17,8 @@ int main(int argc, char* argv[])
   int xStartIndex, yStartIndex;
   int xDuration, yDuration;
 
-  double* xRawSignal = readSignalFile(argv[1], xStartIndex, xDuration);
-  double* yRawSignal = readSignalFile(argv[2], yStartIndex, yDuration);
+  double* xRawSignal = readSignalFile(argv[1],xStartIndex,xDuration);
+  double* yRawSignal = readSignalFile(argv[2],yStartIndex,yDuration);
   double* finalResult;
   int crossCorrDuration, crossStartIndex;
   string fileName = argv[3];
@@ -30,11 +30,15 @@ int main(int argc, char* argv[])
   ofstream outFile(fileName);
   if (!outFile.is_open())
   {
-    cerr << "Error: Could not open " << fileName <<" for writing." << endl;
+    cout << "Error: Could not open ";
+    cout << fileName <<" for writing." << endl;
     return 0;
   }
   outFile << crossStartIndex << "\t";
-  for (int i = 0; i < crossCorrDuration; i++) outFile << finalResult[i] << endl;
+  for (int i=crossStartIndex;i<crossStartIndex+crossCorrDuration;i++)
+  {
+    outFile << finalResult[i] << endl;
+  }
   cout << "Exported crosscorrelation signal to " << fileName 
     <<" with start index " << crossStartIndex 
     << " and duration " << crossCorrDuration <<"." << endl;

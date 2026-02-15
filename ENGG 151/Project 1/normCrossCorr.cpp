@@ -41,7 +41,7 @@ bool is_floating_pt(string s, double* value)
   }
 }
 
-double* readSignalFile(string fileName, int& startIndex, int& duration)
+double* readSignalFile(string fileName,int& startIndex,int& duration)
 {
   fstream dataFile(fileName);
   vector<double> signalVector;
@@ -56,7 +56,7 @@ double* readSignalFile(string fileName, int& startIndex, int& duration)
   duration = 0;
   startIndex = 0;
   
-  string s1, s2;
+  string s1, s2, s3, s4;
   getline(dataFile, s1);
   stringstream sStream(s1);
   sStream >> s2;
@@ -73,19 +73,25 @@ double* readSignalFile(string fileName, int& startIndex, int& duration)
   signalVector.push_back(x_n);
   duration++;
   
-  while (dataFile >> s2)
+  while (!dataFile.eof())
   {
-    if (is_floating_pt(s2, &x_n))
+    getline(dataFile, s3);
+    stringstream sStream2(s3);
+    if (sStream2 >> s4)
     {
+      if(is_floating_pt(s4, &x_n))
+      {
       signalVector.push_back(x_n);
       duration++;
+      }
+      else break;
     }
   }
   cout << "Signal file '" << fileName << "' with starting index " 
     << startIndex << " and duration " << duration <<" read." << endl;
 
   double* signalArray = new double[duration];
-  for (int i = 0; i < duration; i++) signalArray[i] = signalVector[i];
+  for (int i = 0; i <duration; i++) signalArray[i] = signalVector[i];
 
   return signalArray; 
 }
@@ -93,7 +99,8 @@ double* readSignalFile(string fileName, int& startIndex, int& duration)
 void computeCrossCorr(
     double* xRawSignal, int xDuration, int xStartIndex,
     double* yRawSignal, int yDuration, int yStartIndex,
-    double* &crossCorrData, int* crossCorrDuration, int* crossStartIndex)
+    double* &crossCorrData, int* crossCorrDuration, 
+    int* crossStartIndex)
 {
    double 
     x_00 = 0.0, 
@@ -125,12 +132,19 @@ void computeCrossCorr(
 
   double denom = sqrt(x_00 * y_00);
 
+  int relDiff = xStartIndex - yStartIndex;
+  int durDiff = xDuration - yDuration + 1;
+  
   *crossCorrDuration = xDuration + yDuration - 1;
 
   crossCorrData = new double[*crossCorrDuration];
-  *crossStartIndex = -xDuration;
+  *crossStartIndex = -xDuration + durDiff;
+
+    cout << relDiff << endl;
+    cout << durDiff << endl;
+    cout << *crossStartIndex << endl;
   
-  for(int l = -(xDuration); l <= yDuration - 2; l++)
+  for(int l = *crossStartIndex; l < *crossStartIndex + *crossCorrDuration; l++)
   {
     double r_xy = 0.0;
     
@@ -145,10 +159,11 @@ void computeCrossCorr(
 
       r_xy += x_n * y_n;
     }    
-    crossCorrData[l+xDuration] = r_xy / denom;
+    crossCorrData[l] = r_xy / denom;
     if(*crossCorrDuration < 20) 
     { 
-      cout << "p_xy(" << l << ") = " << crossCorrData[l+xDuration] << endl;
+      cout << "p_xy(" << l << ") = ";
+      cout << crossCorrData[l] << endl;
     }
   }
 }
