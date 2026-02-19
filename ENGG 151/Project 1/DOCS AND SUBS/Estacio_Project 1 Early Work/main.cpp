@@ -24,7 +24,7 @@ int main(int argc, char* argv[])
   string fileName = argv[3];
 
   computeCrossCorr(xRawSignal, xDuration, xStartIndex,
-    yRawSignal, yDuration, yStartIndex, 
+    yRawSignal, yDuration, yStartIndex,
     finalResult, &crossCorrDuration, &crossStartIndex);
 
   ofstream outFile(fileName);
@@ -37,10 +37,10 @@ int main(int argc, char* argv[])
   outFile << crossStartIndex << "\t";
   for (int i=crossStartIndex;i<crossStartIndex+crossCorrDuration;i++)
   {
-    outFile << finalResult[i-crossStartIndex] << endl;
+    outFile << finalResult[i - crossStartIndex] << endl;
   }
-  cout << "Exported crosscorrelation signal to " << fileName 
-    <<" with start index " << crossStartIndex 
+  cout << "Exported crosscorrelation signal to " << fileName
+    <<" with start index " << crossStartIndex
     << " and duration " << crossCorrDuration <<"." << endl;
-  outFile.close();  
+  outFile.close();
 }

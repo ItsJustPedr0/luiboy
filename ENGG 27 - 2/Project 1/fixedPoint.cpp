@@ -71,7 +71,7 @@ void readPolynomialFile(double*& equation, int *equationIndex)
   {
     cout << "Invalid file, missing polynomial index" << endl;
   }
-  else cout << "Polynomial of index " 
+  else cout << "Polynomial of degree " 
     << *equationIndex << " read."<< endl;
 
   // initializes array of coefficients
