@@ -19,7 +19,8 @@ using namespace std;
 
 bool is_int(string s, int* value = 0);
 bool is_floating_pt(string s, double* value = 0);
-void readMatrixFile(string fileName, double*& matrix);
-void calcPowerMethod(double* matrix, double*& eigenVector, double*& eigenValue);
+void readMatrixFile(string fileName, vector<vector<double>>& matrix,  int* size);
+double dotProduct(vector<double> a, vector<double> b, int size);
+void calcPowerMethod(const vector<vector<double>> matrix, int size, vector<double>& eigenVector, double& eigenValue);
 
 #endif
