@@ -19,7 +19,6 @@
 #include <fstream>
 #include <vector>
 #include <cmath>
-#include <numbers>
 
 using namespace std;
 
@@ -30,7 +29,7 @@ void convertFreqToRads(double& analogFreq);
 void computeDFT(
   double* xSignal, int xDuration, double samplingFreq,
   double startFreq, double endFreq, int freqSteps,
-  double*& rectReal, double*& rectImag, 
+  double*& rectReal, double*& rectImag,
   double*& polarMag, double*& polarPhase);
 
 #endif

@@ -45,8 +45,8 @@ double* readSignalFile(string fileName,int& startIndex,int& duration)
 {
   fstream dataFile(fileName);
   vector<double> signalVector;
-  
-  if(!dataFile.is_open()) 
+
+  if(!dataFile.is_open())
   {
     cout << "ERROR: Could not open " << fileName << endl;
     return 0;
@@ -55,7 +55,7 @@ double* readSignalFile(string fileName,int& startIndex,int& duration)
   double x_n;
   duration = 0;
   startIndex = 0;
-  
+
   string s1, s2, s3, s4;
   getline(dataFile, s1);
   stringstream sStream(s1);
@@ -65,14 +65,14 @@ double* readSignalFile(string fileName,int& startIndex,int& duration)
   {
     // cout << "Index read: " << startIndex << endl;
   }
-  else 
+  else
   {
     // cout << "Index read: 0" << endl;
     is_floating_pt(s2, &x_n);
-  }  
+  }
   signalVector.push_back(x_n);
   duration++;
-  
+
   while (!dataFile.eof())
   {
     getline(dataFile, s3);
@@ -87,13 +87,13 @@ double* readSignalFile(string fileName,int& startIndex,int& duration)
       else break;
     }
   }
-  cout << "Signal file '" << fileName << "' with starting index " 
+  cout << "Signal file '" << fileName << "' with starting index "
     << startIndex << " and duration " << duration <<" read." << endl;
 
   double* signalArray = new double[duration];
   for (int i = 0; i <duration; i++) signalArray[i] = signalVector[i];
 
-  return signalArray; 
+  return signalArray;
 }
 
 void convertFreqToRads(double& inputFreq)
@@ -104,14 +104,14 @@ void convertFreqToRads(double& inputFreq)
 void computeDFT(
   double* xSignal, int xDuration, double samplingFreq,
   double startFreq, double endFreq, int freqSteps,
-  double*& rectReal, double*& rectImag, 
+  double*& rectReal, double*& rectImag,
   double*& polarMag, double*& polarPhase)
 {
   rectReal = new double[freqSteps+1];
   rectImag = new double[freqSteps+1];
   polarMag = new double[freqSteps+1];
   polarPhase = new double[freqSteps+1];
- 
+
   for(int i = 0; i < freqSteps + 1; i++)
   {
     rectReal[i] = 0;
