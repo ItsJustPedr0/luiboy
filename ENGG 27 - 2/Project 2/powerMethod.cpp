@@ -41,9 +41,80 @@ bool is_floating_pt(string s, double* value)
   }
 }
 
-void readMatrixFile(string fileName, vector<vector<double>>& matrix, int* size)
-{
-  // Gabby
+void readMatrixFile(string* fileName, vector<vector<double>>& matrix, int* size)
+{ 
+  ifstream inputFile;
+  while(true)
+  {
+    cout << "Please input the name of a matrix file like 'testMatrix': ";
+    cin >> *fileName;
+    inputFile.open(*fileName);
+    if (!inputFile.is_open())
+    {
+      cout << "Error: Could not open the file named " << fileName << " Try again."<< endl;
+    }
+    else
+    {
+      cout << "Matrix file '" << *fileName <<"' opened successfully." << endl;
+      break;
+    }
+  }
+
+  string firstLine = "";
+  int n = 0;
+
+  if (getline(inputFile, firstLine))
+  {
+    vector<double> tempRow;
+    stringstream ss(firstLine);
+    string word = "";
+    double temp = 0;
+    while (ss >> word)
+    {
+      if (is_floating_pt(word, &temp)) 
+      {
+        tempRow.push_back(temp);
+        n += 1;
+      }
+      else break;
+    }
+    matrix.push_back(tempRow);
+    *size = n;
+  }
+
+  int rowCount = 0;
+  if (*size > 0)
+  {
+    rowCount = 1;
+    string extraLine;
+    for(rowCount; rowCount < *size; rowCount++)
+    {
+      vector<double> tempRow;
+      getline(inputFile, extraLine);
+      stringstream ss(extraLine);
+      string word = "";
+      double temp = 0;
+      for(int j = 0; j < *size; j++)
+      {
+        ss >> word;
+        is_floating_pt(word, &temp);
+        tempRow.push_back(temp);
+      }
+      matrix.push_back(tempRow);
+    }
+  }
+  if (*size == 0)
+  {
+    cout << "Error: File is empty or invalid." << endl;
+  }
+  else if (*size == rowCount)
+  {
+    cout << "Success! Detected a square " << *size << "x" << rowCount << " matrix." << endl;
+  }
+  else
+  {
+    cout << "Error: Matrix is not square (Cols: " << *size << ", Rows: " << rowCount << ")." << endl;
+  }
 }
 
 double dotProduct(vector<double> a, vector<double> b, int size)
