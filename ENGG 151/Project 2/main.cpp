@@ -7,12 +7,12 @@
 
 #include "dft.h"
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
-  if (argc < 6)
+  if(argc < 6)
   {
-    cout << "Format must be: dft signal-file sampling-rate start-freq end-freq nSteps (logfile)" << endl;
-    return 0;
+    cout << "Format must be: ./dft signal-file sampling-rate start-freq end-freq nSteps (logfile)" << endl;
+    return 1;
   }
 
   string signalFile = argv[1];
@@ -21,36 +21,31 @@ int main(int argc, char *argv[])
   double endFreq = stod(argv[4]);
   int nSteps = stoi(argv[5]);
 
-  string logFile = "";
+  string logFile = "dftlog.txt";
   ofstream logStream;
 
-  if (argc >= 7)
+  if(argc >= 7)
   {
-    logStream.open(argv[6]);
-
-    if (!logStream)
-    {
-      cout << "ERROR: Cannot open log file." << endl;
-    }
+    logFile = argv[6];
+  }
+  cout << "Log file used: " << logFile << endl;
+  logStream.open(logFile, ios::app);
+  if(!logStream)
+  {
+    cout << "ERROR: Cannot open log file." << endl;
   }
 
-  ostream *out = &cout;
-  if (logStream.is_open())
-    out = &logStream;
+  ostream* out = &cout;
+  if(logStream.is_open()) out = &logStream;
 
   int xDuration = 0;
   int xStartIndex = 0;
-  double *xSignal = readSignalFile("x.signal", xStartIndex, xDuration);
-  /*
-    double samplingRate = 32;
-    double startFreq = 4;
-    double endFreq = 8;
-    int nSteps = 8;
-  */
-  double *rectReal = 0;
-  double *rectImag = 0;
-  double *polarMag = 0;
-  double *polarPhase = 0;
+  double* xSignal = readSignalFile(signalFile, xStartIndex, xDuration);
+  double* rectReal = 0;
+  double* rectImag = 0;
+  double* polarMag = 0;
+  double* polarPhase = 0;
+
 
   convertFreqToRads(startFreq);
   convertFreqToRads(endFreq);
@@ -58,40 +53,57 @@ int main(int argc, char *argv[])
   computeDFT(xSignal, xDuration, samplingRate, startFreq, endFreq,
     nSteps, rectReal, rectImag, polarMag, polarPhase);
 
-  cout << "\nRectangular Results" << endl;
+
   logStream << "\nRectangular Results" << endl;
-  cout << "===================================" << endl;
   logStream << "===================================" << endl;
-  cout << "Frequency (Hz) \t Real Part \t Imaginary Part" << endl;
   logStream << "Frequency (Hz) \t Real Part \t Imaginary Part" << endl;
-  for (int i = 0; i < nSteps + 1; i++)
+  if(nSteps < 10)
   {
-    cout << fixed << setprecision(6);
-    logStream << fixed << setprecision(6);
-    double currentFreq = (startFreq + (i * ((endFreq - startFreq) / nSteps))) / 2 / M_PI;
-    cout << currentFreq << " \t";
-    logStream << currentFreq << "\t";
-    cout << rectReal[i] << " \t" << rectImag[i] << endl;
-    logStream << rectReal[i] << "\t" << rectImag[i] << endl;
+    cout << "\nRectangular Results" << endl;
+    cout << "===================================" << endl;
+    cout << "Frequency (Hz) \t Real Part \t Imaginary Part" << endl;
   }
 
-  cout << "\nPolar Results" << endl;
+  for(int i = 0; i < nSteps + 1; i++)
+  {
+
+    logStream << fixed << setprecision(6);
+    double currentFreq = (startFreq + (i * ((endFreq - startFreq)/nSteps)))/2/M_PI;
+    logStream << currentFreq << "\t";
+    logStream<< rectReal[i] << "\t" << rectImag[i] << endl;
+    if(nSteps < 10)
+    {
+      cout << fixed << setprecision(6);
+      cout << currentFreq << " \t";
+      cout << rectReal[i] << " \t" << rectImag[i] << endl;
+    }
+  }
+
   logStream << "\nPolar Results" << endl;
-  cout << "===================================" << endl;
   logStream << "===================================" << endl;
-  cout << "Frequency (Hz) \t Magnitude \t Phase (Degrees)" << endl;
   logStream << "Frequency (Hz) \t Magnitude \t Phase (Degrees)" << endl;
-
-  for (int i = 0; i < nSteps + 1; i++)
+  if(nSteps < 10)
   {
-    cout << fixed << setprecision(6);
-    logStream << fixed << setprecision(6);
-    double currentFreq = (startFreq + (i * ((endFreq - startFreq) / nSteps))) / 2 / M_PI;
-    cout << currentFreq << " \t";
-    logStream << currentFreq << "\t";
-    cout << polarMag[i] << " \t" << polarPhase[i] << endl;
-    logStream << polarMag[i] << "\t" << polarPhase[i] << endl;
+    cout << "\nPolar Results" << endl;
+    cout << "===================================" << endl;
+    cout << "Frequency (Hz) \t Magnitude \t Phase (Degrees)" << endl;
   }
-  if (logStream.is_open())
-    logStream.close();
+
+
+  for(int i = 0; i < nSteps + 1; i++)
+  {
+
+    logStream << fixed << setprecision(6);
+    double currentFreq = (startFreq + (i * ((endFreq - startFreq)/nSteps)))/2/M_PI;
+    logStream << currentFreq << "\t";
+    logStream<< polarMag[i] << "\t" << polarPhase[i] << endl;
+
+    if(nSteps < 10)
+    {
+    cout << fixed << setprecision(6);
+    cout << currentFreq << " \t";
+    cout << polarMag[i] << " \t" << polarPhase[i] << endl;
+    }
+  }
+  if(logStream.is_open()) logStream.close();
 }

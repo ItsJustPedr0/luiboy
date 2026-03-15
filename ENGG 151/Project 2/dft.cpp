@@ -34,7 +34,7 @@ bool is_floating_pt(string s, double* value)
     if (value != 0) *value = n;
     return true;
   }
-  else
+  else 
   {
     if (value != 0) *value = 0;
     return false;
@@ -57,25 +57,34 @@ double* readSignalFile(string fileName,int& startIndex,int& duration)
   startIndex = 0;
 
   string s1, s2, s3, s4;
-  getline(dataFile, s1);
-  stringstream sStream(s1);
-  sStream >> s2;
 
-  if(is_int(s2, &startIndex) && (sStream >> x_n))
+  if (getline(dataFile, s1))
   {
-    // cout << "Index read: " << startIndex << endl;
+    stringstream sStream(s1);
+    if (sStream >> s2)
+    {
+      string firstSignalString;
+      if (is_int(s2, &startIndex) && (sStream >> firstSignalString))
+      {
+        if (is_floating_pt(firstSignalString, &x_n))
+        {
+          signalVector.push_back(x_n);
+          duration++;
+        }
+      }
+      else
+      {
+        if (is_floating_pt(s2, &x_n))
+        {
+          signalVector.push_back(x_n);
+          duration++;
+        }
+      }
+    }
   }
-  else
-  {
-    // cout << "Index read: 0" << endl;
-    is_floating_pt(s2, &x_n);
-  }
-  signalVector.push_back(x_n);
-  duration++;
 
-  while (!dataFile.eof())
+  while (getline(dataFile, s3))
   {
-    getline(dataFile, s3);
     stringstream sStream2(s3);
     if (sStream2 >> s4)
     {
@@ -84,9 +93,9 @@ double* readSignalFile(string fileName,int& startIndex,int& duration)
         signalVector.push_back(x_n);
         duration++;
       }
-      else break;
     }
   }
+
   cout << "Signal file '" << fileName << "' with starting index "
     << startIndex << " and duration " << duration <<" read." << endl;
 
@@ -126,7 +135,8 @@ void computeDFT(
       rectReal[i] += xSignal[k] * cos(digitalFreq * k);
       rectImag[i] -= xSignal[k] * sin(digitalFreq * k);
     }
-    if(abs(rectReal[i]) < 1e-08) rectReal[i] = 0;
+    if(fabs(rectReal[i]) < 1e-08) rectReal[i] = 0;
+    if(fabs(rectImag[i]) < 1e-08) rectImag[i] = 0;
 
     polarMag[i] = hypot(rectReal[i], rectImag[i]);
     polarPhase[i] = atan2(rectImag[i], rectReal[i]) * 180 / M_PI;
