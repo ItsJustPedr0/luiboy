@@ -9,17 +9,23 @@
 
 int main()
 {
-  string fileName;
+  string fileName = "";
   vector<vector<double>> matrix;
-  int matrixSize;
+  int matrixSize = 0;
 
   cout << "Hello, welcome to find the Eigenvalue and Eigenvector-inator!" << endl;
   
   readMatrixFile(&fileName, matrix, &matrixSize);
+  if (matrixSize == 0)
+  {
+    cout << "Empty matrix read. Invalid matrix file.";
+    return 0;
+  }
 
-  double eigenValue;
+  double eigenValue = 0;
   vector<double> eigenVector(matrixSize);
-  string Choice;
+  string Choice = "";
+  
   
   calcPowerMethod(matrix, matrixSize, eigenVector, eigenValue);
 }
