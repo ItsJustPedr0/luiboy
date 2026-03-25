@@ -1,0 +1,13 @@
+POLYNOMIAL  
+5  
+-1.4375
+-3.3  
+2.675
+4.55
+-4.5
+1  
+This is the 5th degree polynomial x^5 - 3.5 x^4  + 2.75 x^3 + 2.125 x^2  - 3.875x +1.25
+roots are 2, -1, 1 +/- 0.5i, 0.5 
+This polynomial appears in 
+[Chapra] (book) Steven C. Chapra: Applied Numerical Methods with MATLAB for Engineers 
+and Scientists, Int'l ed, 2005. ( Example 6.8 )
