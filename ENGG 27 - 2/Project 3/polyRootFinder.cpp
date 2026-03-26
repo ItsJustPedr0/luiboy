@@ -98,7 +98,6 @@ void bairstowsMethod(double* eqn, int index)
   int n = index - 1;
   double* p_x = eqn;
 
-
   while(n > 1)
   {
     double r_0 = - p_x[1] / p_x[2];
@@ -107,7 +106,7 @@ void bairstowsMethod(double* eqn, int index)
     double ds = 1;
 
     //factor by synthetic division  
-    while (abs(dr) > 1e-10 && abs(ds) > 1e-10) 
+    while (abs(dr) > 1e-10 || abs(ds) > 1e-10) 
     {
       double b[n+2] = {p_x[n+1], r_0 * p_x[n+1] + p_x[n]};
       double c[n+1] = {b[0], r_0 * b[0] + b[1]};
@@ -121,13 +120,28 @@ void bairstowsMethod(double* eqn, int index)
       r_0 += dr;
       s_0 += ds;
     }
-    cout << "Converged. r = " << r_0 << " | s= " << s_0 << endl;
-    double q_x[] = {1, -r_0, -s_0};
+    cout << "\nConverged. r = " << r_0 << " | s= " << s_0 << endl;
 
     //find roots of quadratic
-    
+    double q_x[] = {1, -r_0, -s_0};
+    cout << "Terms of q(x): ";
+    for (int i = 0; i < 3; i++) cout << q_x[i] << "x^" << 2-i << " | ";
+    cout << endl;
+    // not done
+
     //deflate
-    
+    double b_x[n] = {p_x[n+1], r_0 * p_x[n+1] + p_x[n]};
+    for(int i = 2; i < n; i++)
+    {
+      b_x[i] = r_0 * b_x[i-1] + s_0 * b_x[i-2] + p_x[n+1-i];
+    }
+    cout << "Terms of Q(x): ";
+    for (int i = 0; i < n; i++) cout << b_x[i] << "x^" << n-1-i << " | ";
+    cout << endl;
+    double* Q_x = new double[n];
+    for (int i = 0; i < n; i++) Q_x[i] = b_x[n-1-i];
+    p_x = Q_x;
+    n -= 2;
   }
 }
 
