@@ -41,7 +41,7 @@ bool is_floating_pt(string s, double* value)
   }
 }
 
-double* readSignalFile(string fileName,int& startIndex,int& duration)
+void readSignalFile(string fileName, double*& inputSignal, double*& outputSignal, int& startIndex, int& duration)
 {
   fstream dataFile(fileName);
   vector<double> signalVector;
@@ -49,7 +49,7 @@ double* readSignalFile(string fileName,int& startIndex,int& duration)
   if(!dataFile.is_open())
   {
     cout << "ERROR: Could not open " << fileName << endl;
-    return 0;
+    return;
   }
 
   double x_n = 0.0;
@@ -99,8 +99,69 @@ double* readSignalFile(string fileName,int& startIndex,int& duration)
   cout << "Signal file '" << fileName << "' with starting index "
     << startIndex << " and duration " << duration <<" read." << endl;
 
-  double* signalArray = new double[duration];
-  for (int i = 0; i <duration; i++) signalArray[i] = signalVector[i];
-
-  return signalArray;
+  inputSignal = new double[duration];
+  outputSignal = new double[duration];
+  for (int i = 0; i < duration; i++) 
+  {
+    inputSignal[i] = signalVector[i];
+    outputSignal[i] = 0;
+  }
+  return;
 }
+
+void readSystemFile(string fileName, double*& bCoeff, double*& aCoeff, int& M_plus1, int& N)
+{
+  fstream dataFile(fileName);
+  vector<double> bVector;
+  vector<double> aVector = {0};
+
+  if(!dataFile.is_open())
+  {
+    cout << "ERROR: Could not open " << fileName << endl;
+    return;
+  }
+
+  string firstLine = "";
+  string secondLine = "";
+  string currentLine = "";
+
+  getline(dataFile, firstLine);
+  stringstream ss1(firstLine);
+  string token = "";
+  if(ss1 >> token) is_int(token, &M_plus1);
+
+  getline(dataFile, secondLine);
+  stringstream ss2(secondLine);
+  if(ss2 >> token) is_int(token, &N);
+
+  double tempB;
+  for(int b = 0; b < M_plus1; b++)
+  {
+    getline(dataFile, currentLine);
+    stringstream ssb(currentLine);
+    if(ssb >> token) if(is_floating_pt(token, &tempB));
+    bVector.push_back(tempB);
+  }
+
+  double tempA;
+  for(int a = 0; a < N+1; a++)
+  {
+    getline(dataFile, currentLine);
+    stringstream ssa(currentLine);
+    if(ssa >> token) if(is_floating_pt(token, &tempA));
+    aVector.push_back(tempA);
+  }
+
+  bCoeff = new double[bVector.size()];
+  for(int i = 0; i < bVector.size(); i++) bCoeff[i] = bVector[i];
+
+  aCoeff = new double[aVector.size()];
+  for(int j = 0; j < aVector.size(); j++) aCoeff[j] = aVector[j];
+
+  return;
+}
+
+/* double computeLTIOutput(double* inputValue, double*& bCoeff, double*& aCoeff, int M_plus1, int N, int n)
+{
+
+} */
