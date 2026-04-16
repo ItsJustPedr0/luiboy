@@ -97,13 +97,23 @@ void bairstowsMethod(double* eqn, int index)
 {
   int n = index - 1;
   double* p_x = eqn;
+  
+  double root1 = 0;
+  double root2 = 0;
+  double rootEstimate = 0;  
+  double rootImag = 0;
 
+  cout << endl;
   while(n > 1)
   {
     double r_0 = - p_x[1] / p_x[2];
     double s_0 = - p_x[0] / p_x[2];
     double dr = 1;
     double ds = 1;
+    root1 = 0;
+    root2 = 0;
+    rootEstimate = 0;  
+    rootImag = 0;
 
     //factor by synthetic division  
     while (abs(dr) > 1e-10 || abs(ds) > 1e-10) 
@@ -120,28 +130,102 @@ void bairstowsMethod(double* eqn, int index)
       r_0 += dr;
       s_0 += ds;
     }
-    cout << "\nConverged. r = " << r_0 << " | s= " << s_0 << endl;
+    //cout << "\nConverged. r = " << r_0 << " | s= " << s_0 << endl;
 
     //find roots of quadratic
     double q_x[] = {1, -r_0, -s_0};
+/* 
     cout << "Terms of q(x): ";
     for (int i = 0; i < 3; i++) cout << q_x[i] << "x^" << 2-i << " | ";
-    cout << endl;
-    // not done
+    cout << endl; */
 
+    double discriminant = pow(q_x[1], 2) - 4*q_x[0]*q_x[2];
+    double realPart = -q_x[1]/(2*q_x[0]);
+    double imaginaryPart = sqrt(abs(discriminant))/(2*q_x[0]);
+
+    if(discriminant > 0) 
+    {
+      root1 = realPart + imaginaryPart;
+      root2 = realPart - imaginaryPart;
+      
+      cout << root1 << endl;
+      for (int i = 0; i < index + 1; i++) rootEstimate += eqn[i] * pow(root1, i);
+      cout << "f(" << root1 << ") = " << rootEstimate << endl << endl;
+
+      rootEstimate = 0;
+
+      cout << root2 << endl;
+      for (int i = 0; i < index + 1; i++) rootEstimate += eqn[i] * pow(root2, i);
+      cout << "f(" << root2 << ") = " << rootEstimate << endl << endl;
+      
+    }
+    else if(discriminant == 0)
+    {
+      root1 = realPart;
+      cout << root1 << endl;
+      for (int i = 0; i < index + 1; i++) rootEstimate += eqn[i] * pow(root1, i);
+      cout << "f(" << root1 << ") = " << rootEstimate << endl << endl;
+    }
+    else if(discriminant < 0)
+    {
+      double tempReal = 1;
+      double tempImag = 0;
+      
+      cout << realPart << " + " << imaginaryPart << "j" << endl;
+      for(int i = 0; i < index + 1; i++)
+      {
+          rootEstimate += eqn[i] * tempReal;
+          rootImag += eqn[i] * tempImag;
+
+          double newRe = (realPart * tempReal) - (imaginaryPart * tempImag);
+          double newIm = (realPart * tempImag) + (imaginaryPart * tempReal);
+          tempReal = newRe;
+          tempImag = newIm;
+      }
+      cout << "f(" << realPart << " + " << imaginaryPart << "j" << ") = " << rootEstimate << " + " << rootImag << "j" << endl << endl; 
+
+      rootEstimate = 0;
+      rootImag = 0;
+      tempReal = 1;
+      tempImag = 0;
+
+      cout << realPart << " - " << imaginaryPart << "j" << endl;
+      for(int i = 0; i < index + 1; i++)
+      {
+          rootEstimate += eqn[i] * tempReal;
+          rootImag += eqn[i] * tempImag;
+
+          double newRe = (realPart * tempReal) - (-imaginaryPart * tempImag);
+          double newIm = (realPart * tempImag) + (-imaginaryPart * tempReal);
+          tempReal = newRe;
+          tempImag = newIm;
+      }
+      cout << "f(" << realPart << " + " << imaginaryPart << "j" << ") = " << rootEstimate << " + " << rootImag << "j" << endl << endl; 
+    }
+    
     //deflate
     double b_x[n] = {p_x[n+1], r_0 * p_x[n+1] + p_x[n]};
     for(int i = 2; i < n; i++)
     {
       b_x[i] = r_0 * b_x[i-1] + s_0 * b_x[i-2] + p_x[n+1-i];
     }
-    cout << "Terms of Q(x): ";
-    for (int i = 0; i < n; i++) cout << b_x[i] << "x^" << n-1-i << " | ";
-    cout << endl;
+
     double* Q_x = new double[n];
     for (int i = 0; i < n; i++) Q_x[i] = b_x[n-1-i];
+/*  cout << "Terms of Q(x): ";
+    for (int i = 0; i < n; i++) cout << Q_x[n-1-i] << "x^" << n-1-i << " | ";
+    cout << endl; */
     p_x = Q_x;
     n -= 2;
+  }
+
+  if (n == 0)
+  {
+    rootEstimate = 0;
+    root1 = -p_x[0]/p_x[1];
+    cout << root1 << endl;
+    for (int i = 0; i < index + 1; i++) rootEstimate += eqn[i] * pow(root1, i);
+    cout << "f(" << root1 << ") = " << rootEstimate << endl << endl;
   }
 }
 

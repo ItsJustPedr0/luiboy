@@ -17,3 +17,4 @@ int main()
   readPolynomialFile(equation, &equationIndex);
   bairstowsMethod(equation, equationIndex);
 }
+
