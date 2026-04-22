@@ -99,13 +99,21 @@ void readSignalFile(string fileName, double*& inputSignal, double*& outputSignal
   cout << "Signal file '" << fileName << "' with starting index "
     << startIndex << " and duration " << duration <<" read." << endl;
 
-  inputSignal = new double[duration];
-  outputSignal = new double[duration];
+  double* tempInput = new double[duration+2];
+  double* tempOutput = new double[duration+2];
+  copy(inputSignal, inputSignal+3, tempInput);
+  copy(outputSignal, outputSignal+2, tempOutput);
   for (int i = 0; i < duration; i++) 
   {
-    inputSignal[i] = signalVector[i];
-    outputSignal[i] = 0;
+    tempInput[i+2] = signalVector[i];
+    tempOutput[i+2] = 0;
   }
+  delete[] inputSignal;
+  inputSignal = tempInput;
+
+  delete[] outputSignal;
+  outputSignal = tempOutput;
+  
   return;
 }
 
@@ -113,7 +121,7 @@ void readSystemFile(string fileName, double*& bCoeff, double*& aCoeff, int& M_pl
 {
   fstream dataFile(fileName);
   vector<double> bVector;
-  vector<double> aVector = {0};
+  vector<double> aVector;
 
   if(!dataFile.is_open())
   {
@@ -161,7 +169,18 @@ void readSystemFile(string fileName, double*& bCoeff, double*& aCoeff, int& M_pl
   return;
 }
 
-/* double computeLTIOutput(double* inputValue, double*& bCoeff, double*& aCoeff, int M_plus1, int N, int n)
+double computeLTIOutput(double*& x_n, double*& y_n, double*& bCoeff, double*& aCoeff, int M_plus1, int N)
 {
-
-} */
+  double outputValue = 0;
+  for(int k = 0; k <= N - 1; k++)
+  {
+    outputValue -= y_n[N-k-1] * aCoeff[k];
+    //cout << "a_" << k << ": " << outputValue << endl;
+  }
+  for(int k = 0; k <= M_plus1 - 1; k++) 
+  {
+    outputValue += x_n[M_plus1-k] * bCoeff[k];
+    //cout << "b_" << k << ": " << outputValue << endl;
+  }
+  return outputValue;
+}

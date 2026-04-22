@@ -19,17 +19,20 @@ int main(int argc, char* argv[])
   for(int i = 0; i < M_plus1; i++) cout << "b(" << i << "): " << bCoeff[i] << endl;
   for(int i = 0; i < N + 1; i++) cout << "a(" << i << "): " << aCoeff[i] << endl;
 
-  int xDuration = 0;
+  int readDuration = 0;
   int xStartIndex = 0;
-  double* xSignal = 0;
-  double* ySignal = 0;
-  readSignalFile("test.txt", xSignal, ySignal, xStartIndex, xDuration);
+  double* xSignal = new double[3]{0,0,0};
+  double* ySignal = new double[2]{0,0};
+  readSignalFile("test.txt", xSignal, ySignal, xStartIndex, readDuration);
 
   cout << "Signal values:" << endl;
-  for(int i = 0; i < xDuration; i++)
+  for(int i = 0; i < readDuration + 2; i++)
   { 
-    cout << "x(" << i << "): " << xSignal[i] << endl;
-    cout << "y(" << i << "): " << ySignal[i] << endl;
+    double* xPref = xSignal + i;
+    double* yPref = ySignal + i;
+    cout << "x(" << i-2 << "): " << xSignal[i] << endl;
+    ySignal[i+2] = computeLTIOutput(xPref, yPref, bCoeff, aCoeff, M_plus1, N);
+    cout << "y(" << i-2 << "): " << ySignal[i-1] << endl;
   }
 
 /*   if(argc < 2)
@@ -54,4 +57,7 @@ int main(int argc, char* argv[])
   }
 
   if(logStream.is_open()) logStream.close(); */
+
+  delete[] xSignal;
+  delete[] ySignal;
 }
