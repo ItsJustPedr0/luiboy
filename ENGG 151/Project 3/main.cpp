@@ -21,18 +21,18 @@ int main(int argc, char* argv[])
 
   int readDuration = 0;
   int xStartIndex = 0;
-  double* xSignal = new double[3]{0,0,0};
+  double* xSignal = new double[2]{0,0};
   double* ySignal = new double[2]{0,0};
   readSignalFile("test.txt", xSignal, ySignal, xStartIndex, readDuration);
 
   cout << "Signal values:" << endl;
   for(int i = 0; i < readDuration + 2; i++)
   { 
-    double* xPref = xSignal + i;
-    double* yPref = ySignal + i;
+    double* xPrev = xSignal + i;
+    double* yPrev = ySignal + i;
     cout << "x(" << i-2 << "): " << xSignal[i] << endl;
-    ySignal[i+2] = computeLTIOutput(xPref, yPref, bCoeff, aCoeff, M_plus1, N);
-    cout << "y(" << i-2 << "): " << ySignal[i-1] << endl;
+    ySignal[i+2] = computeLTIOutput(xPrev, yPrev, bCoeff, aCoeff, M_plus1, N);
+    cout << "y(" << i-2 << "): " << ySignal[i] << endl;
   }
 
 /*   if(argc < 2)

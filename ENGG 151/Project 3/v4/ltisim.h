@@ -24,8 +24,13 @@ using namespace std;
 
 bool is_int(string s, int* value = 0);
 bool is_floating_pt(string s, double* value = 0);
-void readSignalFile(string fileName, double*& inputSignal, double*& outputSignal, int& startIndex, int& duration);
-void readSystemFile(string fileName, double*& bCoeff, double*& aCoeff, int& M_plus1, int& N);
-double computeLTIOutput(double sampleX, double*& xPrev, double*& yPrev, double*& bCoeff, double*& aCoeff, int M_plus1, int N);
+void readSignalFile(string fileName, double*& inputSignal,
+                    double*& outputSignal, int& startIndex,
+                    int& duration);
+void readSystemFile(string fileName, double*& bCoeff,
+                    double*& aCoeff, int& M_plus1, int& N);
+double computeLTIOutput(double inputSample, double*& bCoeff,
+                        double*& aCoeff, int M_plus1, int N,
+                        double*& stateX, double*& stateY);
 
 #endif

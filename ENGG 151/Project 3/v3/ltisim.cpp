@@ -14,12 +14,18 @@ bool is_int(string s, int* value)
   int n = 0;
   if(inputStream >> n && inputStream.eof())
   {
-    if (value != 0) *value = n;
+    if (value != 0)
+    {
+      *value = n;
+    }
     return true;
   }
   else
   {
-    if (value != 0) *value = 0;
+    if (value != 0)
+    {
+      *value = 0;
+    }
     return false;
   }
 }
@@ -31,17 +37,25 @@ bool is_floating_pt(string s, double* value)
   double n = 0;
   if(inputStream >> n && inputStream.eof())
   {
-    if (value != 0) *value = n;
+    if (value != 0)
+    {
+      *value = n;
+    }
     return true;
   }
   else
   {
-    if (value != 0) *value = 0;
+    if (value != 0)
+    {
+      *value = 0;
+    }
     return false;
   }
 }
 
-void readSignalFile(string fileName, double*& inputSignal, double*& outputSignal, int& startIndex, int& duration)
+void readSignalFile(string fileName, double*& inputSignal,
+                    double*& outputSignal, int& startIndex,
+                    int& duration)
 {
   fstream dataFile(fileName);
   vector<double> signalVector;
@@ -97,27 +111,20 @@ void readSignalFile(string fileName, double*& inputSignal, double*& outputSignal
   }
 
   cout << "Signal file '" << fileName << "' with starting index "
-    << startIndex << " and duration " << duration <<" read." << endl;
+       << startIndex << " and duration " << duration <<" read." << endl;
 
-  double* tempInput = new double[duration+2];
-  double* tempOutput = new double[duration+2];
-  copy(inputSignal, inputSignal+3, tempInput);
-  copy(outputSignal, outputSignal+2, tempOutput);
-  for (int i = 0; i < duration; i++) 
+  inputSignal = new double[duration];
+  for (int i = 0; i < duration; i++)
   {
-    tempInput[i+2] = signalVector[i];
-    tempOutput[i+2] = 0;
+    inputSignal[i] = signalVector[i];
   }
-  delete[] inputSignal;
-  inputSignal = tempInput;
+  outputSignal = nullptr;
 
-  delete[] outputSignal;
-  outputSignal = tempOutput;
-  
   return;
 }
 
-void readSystemFile(string fileName, double*& bCoeff, double*& aCoeff, int& M_plus1, int& N)
+void readSystemFile(string fileName, double*& bCoeff, double*& aCoeff,
+                    int& M_plus1, int& N)
 {
   fstream dataFile(fileName);
   vector<double> bVector;
@@ -136,50 +143,75 @@ void readSystemFile(string fileName, double*& bCoeff, double*& aCoeff, int& M_pl
   getline(dataFile, firstLine);
   stringstream ss1(firstLine);
   string token = "";
-  if(ss1 >> token) is_int(token, &M_plus1);
+  if(ss1 >> token)
+  {
+    bool dummy = is_int(token, &M_plus1);
+  }
 
   getline(dataFile, secondLine);
   stringstream ss2(secondLine);
-  if(ss2 >> token) is_int(token, &N);
+  if(ss2 >> token)
+  {
+    bool dummy = is_int(token, &N);
+  }
+  
+  if(M_plus1 == 0 || N == 0)
+  {
+    cout << "Invalid system file read, M+1 or N detected as 0." << endl;
+    return;
+  }
 
   double tempB;
   for(int b = 0; b < M_plus1; b++)
   {
     getline(dataFile, currentLine);
     stringstream ssb(currentLine);
-    if(ssb >> token) if(is_floating_pt(token, &tempB));
+    if(ssb >> token)
+    {
+      bool dummy = is_floating_pt(token, &tempB);
+    }
     bVector.push_back(tempB);
   }
 
   double tempA;
-  for(int a = 0; a < N+1; a++)
+  for(int a = 0; a < N; a++)
   {
     getline(dataFile, currentLine);
     stringstream ssa(currentLine);
-    if(ssa >> token) if(is_floating_pt(token, &tempA));
+    if(ssa >> token)
+    {
+      bool dummy = is_floating_pt(token, &tempA);
+    }
     aVector.push_back(tempA);
   }
 
   bCoeff = new double[bVector.size()];
-  for(int i = 0; i < bVector.size(); i++) bCoeff[i] = bVector[i];
+  for(int i = 0; i < bVector.size(); i++)
+  {
+    bCoeff[i] = bVector[i];
+  }
 
   aCoeff = new double[aVector.size()];
-  for(int j = 0; j < aVector.size(); j++) aCoeff[j] = aVector[j];
+  for(int j = 0; j < aVector.size(); j++)
+  {
+    aCoeff[j] = aVector[j];
+  }
 
   return;
 }
 
-double computeLTIOutput(double sampleX, double*& xPrev, double*& yPrev, double*& bCoeff, double*& aCoeff, int M_plus1, int N)
+double computeLTIOutput(double*& stateX, double*& stateY,
+                        double*& bCoeff, double*& aCoeff,
+                        int M_plus1, int N)
 {
   double outputValue = 0;
-  for(int k = 0; k <= N - 1; k++)
+  for(int k = 0; k < M_plus1; k++)
   {
-    outputValue -= yPrev[N-k-1] * aCoeff[k];
+    outputValue += stateX[k] * bCoeff[k];
   }
-  for(int k = 0; k <= M_plus1 - 2; k++) 
+  for(int k = 0; k < N; k++)
   {
-    outputValue += xPrev[M_plus1-1-k] * bCoeff[k];
+    outputValue -= stateY[k] * aCoeff[k];
   }
-  outputValue += sampleX * bCoeff[0];
   return outputValue;
 }
